@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -100,7 +100,7 @@ def team_form(
     """Recent match results for a team as a W/D/L form string."""
     team = db.query(models.Team).filter(models.Team.id == team_id).first()
     if not team:
-        raise ValueError(f"Team {team_id} not found")
+        raise HTTPException(status_code=404, detail="Team not found")
 
     recent = (
         db.query(models.Match)
