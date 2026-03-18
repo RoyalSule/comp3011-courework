@@ -10,7 +10,6 @@ from database import get_db
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
-
 @router.get("/standings", response_model=List[schemas.StandingEntry])
 def standings(
     league: str = Query(...),
@@ -63,7 +62,6 @@ def standings(
 
     return table
 
-
 @router.get("/top-scorers", response_model=List[schemas.TopScorer])
 def top_scorers(
     limit: int = Query(10, ge=1, le=50),
@@ -89,7 +87,6 @@ def top_scorers(
         )
         for i, p in enumerate(query.limit(limit).all())
     ]
-
 
 @router.get("/team/{team_id}/form")
 def team_form(
@@ -144,7 +141,6 @@ def team_form(
         "losses": sum(1 for r in results if r["result"] == "L"),
         "matches": results,
     }
-
 
 @router.get("/goals-summary")
 def goals_summary(db: Session = Depends(get_db)):

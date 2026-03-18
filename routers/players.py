@@ -10,7 +10,6 @@ from database import get_db
 
 router = APIRouter(prefix="/players", tags=["Players"])
 
-
 @router.get("/", response_model=List[schemas.PlayerOut])
 def list_players(
     position: Optional[str] = Query(None),
@@ -29,14 +28,12 @@ def list_players(
         query = query.filter(models.Player.nationality.ilike(f"%{nationality}%"))
     return query.offset(skip).limit(limit).all()
 
-
 @router.get("/{player_id}", response_model=schemas.PlayerOut)
 def get_player(player_id: int, db: Session = Depends(get_db)):
     player = db.query(models.Player).filter(models.Player.id == player_id).first()
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
     return player
-
 
 @router.post("/", response_model=schemas.PlayerOut, status_code=status.HTTP_201_CREATED)
 def create_player(
@@ -53,7 +50,6 @@ def create_player(
     db.refresh(player)
     return player
 
-
 @router.patch("/{player_id}", response_model=schemas.PlayerOut)
 def update_player(
     player_id: int,
@@ -69,7 +65,6 @@ def update_player(
     db.commit()
     db.refresh(player)
     return player
-
 
 @router.delete("/{player_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_player(

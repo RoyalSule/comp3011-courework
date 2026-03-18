@@ -29,16 +29,13 @@ app.include_router(players.router)
 app.include_router(matches.router)
 app.include_router(analytics.router)
 
-
 @app.get("/", tags=["Health"])
 def root():
     return {"message": "SportsPulse API", "docs": "/docs"}
 
-
 @app.get("/health", tags=["Health"])
 def health():
     return {"status": "ok", "version": "1.0.0"}
-
 
 @app.post("/auth/register", response_model=schemas.UserOut, status_code=201, tags=["Auth"])
 def register(data: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -49,7 +46,6 @@ def register(data: schemas.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return user
-
 
 @app.post("/auth/login", response_model=schemas.Token, tags=["Auth"])
 def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):

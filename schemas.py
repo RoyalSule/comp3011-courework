@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field
 
-
 # Auth
 
 class UserCreate(BaseModel):
@@ -20,7 +19,6 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
 
 # Teams
 
@@ -53,7 +51,6 @@ class TeamOut(TeamCreate):
 
     model_config = {"from_attributes": True}
 
-
 # Players
 
 class PlayerCreate(BaseModel):
@@ -85,7 +82,6 @@ class PlayerOut(PlayerCreate):
 
     model_config = {"from_attributes": True}
 
-
 # Matches
 
 class MatchCreate(BaseModel):
@@ -111,7 +107,6 @@ class MatchOut(MatchCreate):
     away_team_name: Optional[str] = None
 
     model_config = {"from_attributes": True}
-
 
 # Analytics
 

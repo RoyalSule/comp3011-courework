@@ -3,7 +3,6 @@ from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, St
 from sqlalchemy.orm import relationship
 from database import Base
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -12,7 +11,6 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-
 
 class Team(Base):
     __tablename__ = "teams"
@@ -33,7 +31,6 @@ class Team(Base):
     home_matches = relationship("Match", foreign_keys="Match.home_team_id", back_populates="home_team")
     away_matches = relationship("Match", foreign_keys="Match.away_team_id", back_populates="away_team")
 
-
 class Player(Base):
     __tablename__ = "players"
 
@@ -50,7 +47,6 @@ class Player(Base):
     team_id = Column(Integer, ForeignKey("teams.id"), nullable=True)
 
     team = relationship("Team", back_populates="players")
-
 
 class Match(Base):
     __tablename__ = "matches"

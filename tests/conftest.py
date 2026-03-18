@@ -21,7 +21,6 @@ engine = create_engine(
 
 TestingSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 def override_get_db():
     db = TestingSession()
     try:
@@ -32,13 +31,11 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
-
 @pytest.fixture
 def client():
     Base.metadata.create_all(bind=engine)
     yield TestClient(app)
     Base.metadata.drop_all(bind=engine)
-
 
 @pytest.fixture
 def auth_headers(client):

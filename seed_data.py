@@ -37,7 +37,6 @@ LEAGUE = "Premier League"
 SEASON = "2024/25"
 COUNTRY = "England"
 
-
 def parse_date(date_str: str) -> datetime:
     for fmt in ("%d/%m/%Y", "%d/%m/%y"):
         try:
@@ -45,7 +44,6 @@ def parse_date(date_str: str) -> datetime:
         except ValueError:
             continue
     raise ValueError(f"Unrecognised date format: {date_str}")
-
 
 # Read CSV, skip rows with no result (future fixtures)
 rows, team_names = [], set()

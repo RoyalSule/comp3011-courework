@@ -1,6 +1,5 @@
 import pytest
 
-
 @pytest.fixture
 def season_data(client, auth_headers):
     """Two teams with three matches: home wins 2, draws 1."""
@@ -28,7 +27,6 @@ def season_data(client, auth_headers):
 
     return home, away
 
-
 def test_standings(client, season_data):
     response = client.get("/analytics/standings?league=Premier League")
     assert response.status_code == 200
@@ -37,11 +35,9 @@ def test_standings(client, season_data):
     assert table[0]["points"] == 7  # 2 wins + 1 draw
     assert table[0]["position"] == 1
 
-
 def test_standings_goal_difference(client, season_data):
     table = client.get("/analytics/standings?league=Premier League").json()
     assert table[0]["goal_difference"] == 3  # scored 4, conceded 1
-
 
 def test_team_form(client, auth_headers, season_data):
     home, _ = season_data
@@ -52,11 +48,9 @@ def test_team_form(client, auth_headers, season_data):
     assert data["wins"] == 2
     assert data["draws"] == 1
 
-
 def test_team_form_not_found(client):
     response = client.get("/analytics/team/999/form")
     assert response.status_code == 404
-
 
 def test_goals_summary(client, auth_headers, season_data):
     response = client.get("/analytics/goals-summary")
@@ -65,7 +59,6 @@ def test_goals_summary(client, auth_headers, season_data):
     assert data["total_matches"] == 3
     assert data["total_goals"] == 5  # 2+0 + 1+0 + 1+1
     assert data["average_goals_per_match"] == round(5 / 3, 2)
-
 
 def test_top_scorers_empty(client):
     response = client.get("/analytics/top-scorers")

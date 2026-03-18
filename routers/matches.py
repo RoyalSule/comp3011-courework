@@ -10,7 +10,6 @@ from database import get_db
 
 router = APIRouter(prefix="/matches", tags=["Matches"])
 
-
 def _build_match_out(match: models.Match) -> schemas.MatchOut:
     return schemas.MatchOut(
         id=match.id,
@@ -27,7 +26,6 @@ def _build_match_out(match: models.Match) -> schemas.MatchOut:
         away_team_name=match.away_team.name if match.away_team else None,
     )
 
-
 def _update_team_stats(home: models.Team, away: models.Team, home_score: int, away_score: int):
     home.goals_scored += home_score
     home.goals_conceded += away_score
@@ -43,7 +41,6 @@ def _update_team_stats(home: models.Team, away: models.Team, home_score: int, aw
     else:
         home.draws += 1
         away.draws += 1
-
 
 @router.get("/", response_model=List[schemas.MatchOut])
 def list_matches(
@@ -73,7 +70,6 @@ def get_match(match_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Match not found")
     return _build_match_out(match)
 
-
 @router.post("/", response_model=schemas.MatchOut, status_code=status.HTTP_201_CREATED)
 def create_match(
     data: schemas.MatchCreate,
@@ -98,7 +94,6 @@ def create_match(
     db.refresh(match)
     return _build_match_out(match)
 
-
 @router.patch("/{match_id}", response_model=schemas.MatchOut)
 def update_match(
     match_id: int,
@@ -114,7 +109,6 @@ def update_match(
     db.commit()
     db.refresh(match)
     return _build_match_out(match)
-
 
 @router.delete("/{match_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_match(

@@ -1,6 +1,5 @@
 import pytest
 
-
 @pytest.fixture
 def two_teams(client, auth_headers):
     home = client.post("/teams/", json={
@@ -10,7 +9,6 @@ def two_teams(client, auth_headers):
         "name": "Chelsea", "country": "England", "league": "Premier League"
     }, headers=auth_headers).json()
     return home, away
-
 
 def test_create_match(client, auth_headers, two_teams):
     home, away = two_teams
@@ -26,7 +24,6 @@ def test_create_match(client, auth_headers, two_teams):
     assert response.status_code == 201
     assert response.json()["home_score"] == 2
 
-
 def test_create_match_same_team(client, auth_headers, two_teams):
     home, _ = two_teams
     response = client.post("/matches/", json={
@@ -40,7 +37,6 @@ def test_create_match_same_team(client, auth_headers, two_teams):
     }, headers=auth_headers)
     assert response.status_code == 400
 
-
 def test_create_match_invalid_team(client, auth_headers, two_teams):
     home, _ = two_teams
     response = client.post("/matches/", json={
@@ -53,7 +49,6 @@ def test_create_match_invalid_team(client, auth_headers, two_teams):
         "season": "2024/25",
     }, headers=auth_headers)
     assert response.status_code == 404
-
 
 def test_match_updates_team_stats(client, auth_headers, two_teams):
     home, away = two_teams
@@ -73,7 +68,6 @@ def test_match_updates_team_stats(client, auth_headers, two_teams):
     assert away_updated["losses"] == 1
     assert away_updated["goals_conceded"] == 3
 
-
 def test_list_matches_filter_by_team(client, auth_headers, two_teams):
     home, away = two_teams
     client.post("/matches/", json={
@@ -88,7 +82,6 @@ def test_list_matches_filter_by_team(client, auth_headers, two_teams):
     response = client.get(f"/matches/?team_id={home['id']}")
     assert response.status_code == 200
     assert len(response.json()) == 1
-
 
 def test_delete_match(client, auth_headers, two_teams):
     home, away = two_teams
