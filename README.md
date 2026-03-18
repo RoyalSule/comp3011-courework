@@ -145,6 +145,22 @@ Match data is sourced from [football-data.co.uk](https://www.football-data.co.uk
 
 ---
 
+## Error Codes
+
+| Code | Meaning |
+|------|---------|
+| 200 | OK |
+| 201 | Created |
+| 204 | Deleted |
+| 400 | Bad request |
+| 401 | Unauthorized |
+| 404 | Not found |
+| 409 | Conflict |
+| 422 | Validation error |
+| 429 | Too many requests |
+
+---
+
 ## Deployment
 
 Live at https://royalsule.pythonanywhere.com. Uses a custom ASGI-to-WSGI adapter as PythonAnywhere's free tier only supports WSGI.
