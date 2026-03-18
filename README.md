@@ -1,10 +1,6 @@
-# SportsPulse API
+# Football Statistics API
 
-## Overview
-
-SportsPulse is a RESTful web API for football statistics, built as part of COMP3011 Web Services and Web Data at the University of Leeds. It provides a structured interface for storing and querying football data — including teams, players, and match results — backed by a SQLite database and exposed through a clean set of HTTP endpoints.
-
-The API is built with FastAPI and SQLAlchemy, and ships with a data importer that loads real 2024/25 Premier League match results directly from football-data.co.uk. Alongside standard CRUD operations, it offers analytical endpoints that compute live league standings, top scorer rankings, team form guides, and goal summaries. Write access is protected with JWT authentication, while all read endpoints are publicly accessible.
+A RESTful web API for football statistics built with FastAPI and SQLAlchemy. Supports full CRUD for teams, players, and match results, plus analytical endpoints for league standings, top scorers, team form, and goal summaries. Match data is imported from football-data.co.uk and write access is protected with JWT authentication.
 
 ---
 
@@ -17,93 +13,73 @@ The API is built with FastAPI and SQLAlchemy, and ships with a data importer tha
 
 ## Setup
 
-**1. Clone the repository**
+1. Clone the repository
+
 ```bash
-git clone https://github.com/your-username/sportspulse-api.git
-cd sportspulse-api
+git clone https://github.com/RoyalSule/comp3011-courework.git
+cd comp3011-courework
 ```
 
-**2. Create and activate a virtual environment**
+2. Create and activate a virtual environment
+
 ```bash
 python -m venv venv
-
-# macOS / Linux
 source venv/bin/activate
-
-# Windows
-venv\Scripts\activate
 ```
 
-**3. Install dependencies**
+3. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-**4. Download the dataset**
+4. Download the dataset
+
 ```bash
 mkdir -p data
 curl -o data/E0.csv https://www.football-data.co.uk/mmz4281/2425/E0.csv
 ```
-> Or paste the URL into your browser — it downloads immediately with no login required.
 
-**5. Seed the database**
+Or paste the URL into your browser — it downloads immediately with no login required.
+
+5. Seed the database
+
 ```bash
 python seed_data.py
 ```
 
-**6. Set your secret key (recommended)**
-```bash
-# macOS / Linux
-export SECRET_KEY="your-secret-key-here"
+6. Run the server
 
-# Windows
-set SECRET_KEY=your-secret-key-here
-```
-> If not set, the app falls back to a default key. Always set this in production.
-
-**7. Run the server**
 ```bash
 uvicorn main:app --reload
 ```
 
-The API is now available at `http://127.0.0.1:8000`
+The API is available at http://127.0.0.1:8000
 
 ---
 
-## Interactive Docs
+## Running Tests
 
-| Interface | URL |
-|-----------|-----|
-| Swagger UI | http://127.0.0.1:8000/docs |
-| ReDoc | http://127.0.0.1:8000/redoc |
-| API Documentation PDF | `api_documentation.pdf` in this repo |
+```bash
+pytest tests/ -v
+```
+
+---
+
+## Docs
+
+| | URL |
+|---|---|
+| Swagger UI (local) | http://127.0.0.1:8000/docs |
+| Swagger UI (live) | https://royalsule.pythonanywhere.com/docs |
+
+API documentation PDF is included in the repository.
 
 ---
 
 ## Authentication
 
-Read endpoints are public. Write endpoints (POST, PATCH, DELETE) require a JWT token.
-
-**Register**
-```bash
-curl -X POST http://127.0.0.1:8000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "secret123"}'
-```
-
-**Login**
-```bash
-curl -X POST http://127.0.0.1:8000/auth/login \
-  -d "username=admin&password=secret123"
-```
-
-**Use the token**
-```bash
-curl -X POST http://127.0.0.1:8000/teams/ \
-  -H "Authorization: Bearer <your_token>" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Everton", "country": "England", "league": "Premier League"}'
-```
+Read endpoints are public. Write endpoints (POST, PATCH, DELETE) require a JWT token. Register and login via `/auth/register` and `/auth/login`, then pass the token as `Authorization: Bearer <token>`. You can test this in the Swagger UI.
 
 ---
 
@@ -136,23 +112,29 @@ curl -X POST http://127.0.0.1:8000/teams/ \
 ## Project Structure
 
 ```
-sportspulse-api/
-├── main.py             # App entry point, auth routes
-├── database.py         # DB engine and session
-├── models.py           # SQLAlchemy models
-├── schemas.py          # Pydantic schemas
-├── auth.py             # JWT authentication
-├── seed_data.py        # CSV importer
+comp3011-courework/
+├── main.py
+├── database.py
+├── models.py
+├── schemas.py
+├── auth.py
+├── seed_data.py
 ├── requirements.txt
 ├── README.md
 ├── api_documentation.pdf
 ├── data/
-│   └── E0.csv          # Downloaded dataset (not committed to git)
-└── routers/
-    ├── teams.py
-    ├── players.py
-    ├── matches.py
-    └── analytics.py
+│   └── E0.csv
+├── routers/
+│   ├── teams.py
+│   ├── players.py
+│   ├── matches.py
+│   └── analytics.py
+└── tests/
+    ├── conftest.py
+    ├── test_auth.py
+    ├── test_teams.py
+    ├── test_matches.py
+    └── test_analytics.py
 ```
 
 ---
@@ -163,23 +145,6 @@ Match data is sourced from [football-data.co.uk](https://www.football-data.co.uk
 
 ---
 
-## Error Codes
+## Deployment
 
-| Code | Meaning |
-|------|---------|
-| 200 | OK |
-| 201 | Created |
-| 204 | Deleted |
-| 400 | Bad request |
-| 401 | Unauthorized |
-| 404 | Not found |
-| 409 | Conflict (duplicate) |
-| 422 | Validation error |
-
----
-
-## Author
-
-Royal Sule  
-University of Leeds  
-2026
+Live at https://royalsule.pythonanywhere.com. Uses a custom ASGI-to-WSGI adapter as PythonAnywhere's free tier only supports WSGI.
