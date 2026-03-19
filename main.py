@@ -12,9 +12,7 @@ from routers import analytics, matches, players, teams
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="Football Statistics API",
-    description="Manage teams, players, and match results.",
-    version="1.0.0",
+    title="Football Statistics API"
 )
 
 app.add_middleware(
