@@ -12,8 +12,8 @@ from routers import analytics, matches, players, teams
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="SportsPulse API",
-    description="Football statistics API — manage teams, players, and match results.",
+    title="Football Statistics API",
+    description="Manage teams, players, and match results.",
     version="1.0.0",
 )
 
