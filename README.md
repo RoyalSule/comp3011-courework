@@ -1,6 +1,6 @@
 # Football Statistics API
 
-A RESTful web API for football statistics built with FastAPI and SQLAlchemy. Supports full CRUD for teams, players, and match results, plus analytical endpoints for league standings, top scorers, team form, and goal summaries. Match data is imported from football-data.co.uk and write access is protected with JWT authentication.
+A RESTful web API for football statistics built with FastAPI and SQLAlchemy. Supports full CRUD for teams, players, and match results, plus analytical endpoints for league standings, top scorers, team form, and goal summaries. Match data is imported from football-data.co.uk and player stats from Kaggle. Write access is protected with JWT authentication. An MCP server is included to expose tools for AI assistants.
 
 ---
 
@@ -33,19 +33,23 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Download the dataset
+4. Download the datasets
 
 ```bash
 mkdir -p data
 curl -o data/E0.csv https://www.football-data.co.uk/mmz4281/2425/E0.csv
 ```
 
-Or paste the URL into your browser — it downloads immediately with no login required.
+Also download the player stats CSV from Kaggle and place it at `data/epl_player_stats_24_25.csv`:
+```
+https://www.kaggle.com/datasets/aesika/english-premier-league-player-stats-2425
+```
 
 5. Seed the database
 
 ```bash
 python seed_data.py
+python seed_players.py
 ```
 
 6. Run the server
@@ -106,6 +110,8 @@ Read endpoints are public. Write endpoints (POST, PATCH, DELETE) require a JWT t
 | GET | `/analytics/top-scorers` | No | Top goal scorers |
 | GET | `/analytics/team/{id}/form` | No | Recent team form |
 | GET | `/analytics/goals-summary` | No | Goal statistics |
+| GET | `/mcp` | No | MCP server manifest |
+| POST | `/mcp/tools/call` | No | Call an MCP tool |
 
 ---
 
@@ -118,12 +124,15 @@ comp3011-courework/
 ├── models.py
 ├── schemas.py
 ├── auth.py
+├── mcp_server.py
 ├── seed_data.py
+├── seed_players.py
 ├── requirements.txt
 ├── README.md
 ├── api_documentation.pdf
 ├── data/
-│   └── E0.csv
+│   ├── E0.csv
+│   └── epl_player_stats_24_25.csv
 ├── routers/
 │   ├── teams.py
 │   ├── players.py
@@ -139,9 +148,12 @@ comp3011-courework/
 
 ---
 
-## Data Source
+## Data Sources
 
-Match data is sourced from [football-data.co.uk](https://www.football-data.co.uk), used for educational purposes in accordance with their terms.
+- Match data: [football-data.co.uk](https://www.football-data.co.uk) — 2024/25 Premier League results
+- Player stats: [Kaggle — English Premier League Player Stats 2024/25](https://www.kaggle.com/datasets/aesika/english-premier-league-player-stats-2425)
+
+Both datasets are used for educational purposes only.
 
 ---
 
@@ -157,10 +169,9 @@ Match data is sourced from [football-data.co.uk](https://www.football-data.co.uk
 | 404 | Not found |
 | 409 | Conflict |
 | 422 | Validation error |
-| 429 | Too many requests |
 
 ---
 
 ## Deployment
 
-Live at https://royalsule.pythonanywhere.com. Uses a custom ASGI-to-WSGI adapter as PythonAnywhere's free tier only supports WSGI.
+Live at https://royalsule.pythonanywhere.com. Uses a custom ASGI-to-WSGI adapter as PythonAnywhere's free tier only supports WSGI. The database URL is configured via the `DATABASE_URL` environment variable to support both local and hosted environments.
