@@ -8,12 +8,11 @@ import models
 import schemas
 from database import engine, get_db
 from routers import analytics, matches, players, teams
+from mcp_server import router as mcp_router
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(
-    title="Football Statistics API"
-)
+app = FastAPI(title="Football Statistics API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,14 +25,18 @@ app.include_router(teams.router)
 app.include_router(players.router)
 app.include_router(matches.router)
 app.include_router(analytics.router)
+app.include_router(mcp_router)
+
 
 @app.get("/", tags=["Health"])
 def root():
-    return {"message": "SportsPulse API", "docs": "/docs"}
+    return {"message": "Football Statistics API", "docs": "/docs"}
+
 
 @app.get("/health", tags=["Health"])
 def health():
     return {"status": "ok", "version": "1.0.0"}
+
 
 @app.post("/auth/register", response_model=schemas.UserOut, status_code=201, tags=["Auth"])
 def register(data: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -44,6 +47,7 @@ def register(data: schemas.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return user
+
 
 @app.post("/auth/login", response_model=schemas.Token, tags=["Auth"])
 def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
